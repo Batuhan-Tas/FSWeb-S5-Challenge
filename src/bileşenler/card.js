@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const Card = (makale) => {
   // GÖREV 5
   // ---------------------
@@ -17,6 +19,33 @@ const Card = (makale) => {
   //   </div>
   // </div>
   //
+
+  const createCard = document.createElement('div');
+  createCard.classList.add('card');
+
+  const createHeadline2 = document.createElement('div');
+  createHeadline2.classList.add('headline');
+  createHeadline2.textContent = makale.anabaslik;
+
+  const createAuthor = document.createElement('div');
+  createAuthor.classList.add('author');
+
+  const createContainer = document.createElement('div');
+  createContainer.classList.add('img-container');
+
+  const createPhoto = document.createElement('img');
+  createPhoto.src = makale.yazarFoto;
+
+  const createYazar = document.createElement('span');
+  createYazar.textContent = makale.yazarAdi+ ' tarafından';
+
+  createContainer.appendChild(createPhoto);
+  createAuthor.appendChild(createContainer);
+  createAuthor.appendChild(createYazar);
+  createCard.appendChild(createHeadline2);
+  createCard.appendChild(createAuthor);
+
+  return createCard;
 }
 
 const cardEkleyici = (secici) => {
@@ -28,6 +57,22 @@ const cardEkleyici = (secici) => {
   // Card bileşenini kullanarak yanıttaki her makale nesnesinden bir kart oluşturun.
   // Her cardı, fonksiyona iletilen seçiciyle eşleşen DOM'daki öğeye ekleyin.
   //
+
+  const cardEkle = document.querySelector(secici);
+
+  axios
+    .get('http://localhost:5001/api/makaleler')
+    .then((res) => {
+      for(let key in res.data.makaleler){
+        for(let i=0;i<res.data.makaleler[key].length;i++){
+          cardEkle.appendChild(Card(res.data.makaleler[key][i]));
+        }
+      }
+      
+    })
+
+    return cardEkle;
+
 }
 
 export { Card, cardEkleyici }
